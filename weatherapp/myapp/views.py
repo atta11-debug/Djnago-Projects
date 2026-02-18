@@ -3,9 +3,9 @@ import requests
 import datetime
 from django.contrib import messages
 
-WEATHER_API_KEY = "8488f8d2ea8d0c169dae240d337de95e"
-GOOGLE_API_KEY = "AIzaSyCpYfprxrkWZ3InCnPMqMjX7t6jG3OosEM"
-SEARCH_ENGINE_ID = "a5e06da324aee4b59"
+WEATHER_API_KEY = "YOUR_OPENWEATHER_KEY"
+GOOGLE_API_KEY = "YOUR_GOOGLE_KEY"
+SEARCH_ENGINE_ID = "YOUR_SEARCH_ENGINE_ID"
 
 
 def home(request):
