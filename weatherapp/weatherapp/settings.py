@@ -2,6 +2,10 @@
 import os
 from pathlib import Path
 
+from dotenv import load_dotenv
+
+load_dotenv()
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -105,7 +109,12 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
-STATIC_URL = "static/"
-STATICFILES_DIRS=[
-    os.path.join(BASE_DIR,'static')
-]
+STATIC_URL = "/static/"
+# STATICFILES_DIRS=[
+#     os.path.join(BASE_DIR,'static')
+# ]
+
+WEATHER_API_KEY = os.getenv("WEATHER_API_KEY")
+GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
+GOOGLE_SEARCH_ENGINE = os.getenv("GOOGLE_SEARCH_ENGINE")
+UNSPLASH_API_KEY = os.getenv("UNSPLASH_API_KEY")

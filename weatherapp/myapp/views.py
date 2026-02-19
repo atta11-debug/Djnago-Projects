@@ -2,29 +2,30 @@ from django.shortcuts import render
 import requests
 import datetime
 from django.contrib import messages
-
-WEATHER_API_KEY = "YOUR_OPENWEATHER_KEY"
-GOOGLE_API_KEY = "YOUR_GOOGLE_KEY"
-SEARCH_ENGINE_ID = "YOUR_SEARCH_ENGINE_ID"
+from django.conf import settings
 
 
 def home(request):
     city = request.POST.get("city", "Jhang")
 
+    # Weather API
     weather_url = "https://api.openweathermap.org/data/2.5/weather"
-    weather_params = {"q": city, "appid": WEATHER_API_KEY, "units": "metric"}
+    weather_params = {
+        "q": city,
+        "appid": settings.WEATHER_API_KEY,
+        "units": "metric"
+    }
 
     # Default values
     description = icon = temp = "N/A"
-    image_url = None
     exception_occurred = False
+    image_url = None  # Background image
 
     try:
-        # 🌤 Weather API
+        # 🌤 Fetch weather
         weather_response = requests.get(weather_url, params=weather_params)
-        weather_data = weather_response.json()
-
         if weather_response.status_code == 200:
+            weather_data = weather_response.json()
             description = weather_data["weather"][0]["description"]
             icon = weather_data["weather"][0]["icon"]
             temp = weather_data["main"]["temp"]
@@ -32,22 +33,24 @@ def home(request):
             exception_occurred = True
             messages.error(request, "City not found.")
 
-        # 🖼 Google Image API
-        query = city + " 1920x1080"
-        image_url_api = f"https://www.googleapis.com/customsearch/v1?key={GOOGLE_API_KEY}&cx={SEARCH_ENGINE_ID}&q={query}&searchType=image&imgSize=xlarge"
+        # 🖼 Fetch city image from Unsplash API
+        unsplash_url = f"https://api.unsplash.com/photos/random?query={city}&client_id={settings.UNSPLASH_API_KEY}"
+        image_response = requests.get(unsplash_url)
+        if image_response.status_code == 200:
+            image_data = image_response.json()
+            image_url = image_data["urls"]["regular"]  # You can also use "full" or "raw"
+        else:
+            # fallback image if Unsplash fails
+            image_url = "https://images.pexels.com/photos/3008509/pexels-photo-3008509.jpeg?auto=compress&cs=tinysrgb&w=1600"
 
-        image_response = requests.get(image_url_api)
-        image_data = image_response.json()
-
-        items = image_data.get("items")
-        if items:
-            image_url = items[0]["link"]
-
-    except Exception:
+    except requests.exceptions.RequestException:
         exception_occurred = True
-        messages.error(request, "Something went wrong.")
+        messages.error(request, "Network error. Please try again.")
+        # fallback image
+        image_url = "https://images.pexels.com/photos/3008509/pexels-photo-3008509.jpeg?auto=compress&cs=tinysrgb&w=1600"
 
     day = datetime.date.today()
+    print("Background image URL:", image_url)
 
     return render(
         request,
