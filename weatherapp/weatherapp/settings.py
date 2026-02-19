@@ -19,7 +19,8 @@ SECRET_KEY = "django-insecure-^bc)%!v)q-3scsnvst+r&!!+x01n$rv7%d-q8*rf)an%xfe87l
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
+
 
 
 # Application definition
@@ -35,6 +36,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -118,3 +120,6 @@ WEATHER_API_KEY = os.getenv("WEATHER_API_KEY")
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
 GOOGLE_SEARCH_ENGINE = os.getenv("GOOGLE_SEARCH_ENGINE")
 UNSPLASH_API_KEY = os.getenv("UNSPLASH_API_KEY")
+
+
+STATIC_ROOT = BASE_DIR / 'staticfiles'
